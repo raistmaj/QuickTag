@@ -8,11 +8,9 @@
 # www.josepalma.ca 
 from os import listdir
 from os.path import isfile, join
-import math
 import os
 import argparse
 import json
-import pathlib
 import subprocess
 
 parser = argparse.ArgumentParser(description='Process exif data in batch')
@@ -24,9 +22,6 @@ options = parser.parse_args()
 configuration_file = open(options.file,)
 data = json.load(configuration_file)
 
-gpslat = data['latitude']
-gpslon = data['longitude']
-
 current_path = options.input
 
 if not os.path.isabs(current_path):
@@ -34,6 +29,13 @@ if not os.path.isabs(current_path):
 
 onlyfiles = [f for f in listdir(current_path) if isfile(join(current_path, f))]
 
+base_command = ['exiftool']
+for key,value in data.items():
+    base_command.extend(['-' + key + '=' + value])
+
+
 for image in onlyfiles:
-    subprocess.run(['exiftool', '-GPSLongitude='+gpslon, '-GPSLongitudeRef='+gpslat, '-GPSLatitude='+gpslon, '-GPSLatitudeRef='+gpslat, join(current_path,image)])
+    new_command = base_command.copy()
+    new_command.extend([join(current_path, image)])
+    subprocess.run(new_command)
 
