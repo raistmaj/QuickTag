@@ -6,6 +6,8 @@
 # Example: python tag.py --input 'pictures_folder' --file 'meta.json'
 #
 # www.josepalma.ca 
+# Just an extra line to test
+
 from os import listdir
 from os.path import isfile, join
 import os
